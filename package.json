@@ -1,0 +1,16 @@
+{
+  "name": "os-algorithm-lab",
+  "version": "1.0.0",
+  "description": "Animated, beginner-friendly simulator for CPU scheduling, page replacement, disk scheduling and the Banker's algorithm.",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "build:exe": "node scripts/build-exe.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.3"
+  }
+}

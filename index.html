@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Interactive OS Algorithm Lab</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#151a22;--mut:#566170;--card:#fff;--bd:#cfd5dd;--ac:#1d5bbf;--ok:#0a6b39;--okb:#dcf2e5;--bad:#a2171b;--badb:#fbe2e2;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f141b;--fg:#e8ecf2;--mut:#9ba7b6;--card:#171d27;--bd:#2c3542;--ac:#7db0ff;--ok:#74dda2;--okb:#13301f;--bad:#ff9090;--badb:#3b1719;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f141b;--fg:#e8ecf2;--mut:#9ba7b6;--card:#171d27;--bd:#2c3542;--ac:#7db0ff;--ok:#74dda2;--okb:#13301f;--bad:#ff9090;--badb:#3b1719;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--bd)}nav b{align-self:center;margin-right:8px}
+main{max-width:1000px;margin:0 auto;padding:6px 14px}footer{max-width:1000px;margin:0 auto;padding:10px 14px;color:var(--mut);font-size:13px}
+section[hidden]{display:none}h1,h2,h3{margin:.5em 0 .3em}
+button,select,input,textarea{font:inherit;color:inherit}
+button{background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:6px 12px;cursor:pointer}
+button:hover:not(:disabled){border-color:var(--ac)}button:disabled{opacity:.45;cursor:not-allowed}
+button.pri,button[aria-current]{background:var(--ac);border-color:var(--ac);color:var(--bg);font-weight:600}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;margin:10px 0}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+label{display:block;font-weight:600;margin:6px 0 2px}
+textarea,input,select{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:6px}
+textarea{min-height:96px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0 4px}.bar label{display:flex;align-items:center;gap:6px;margin:0;font-weight:400}.bar select{width:auto}
+.err{background:var(--badb);color:var(--bad);border:1px solid var(--bad);border-radius:8px;padding:6px 12px;margin-top:8px}
+.st{font-weight:600;min-height:1.5em;margin:8px 2px}small,.mut{color:var(--mut)}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%}th,td{border:1px solid var(--bd);padding:4px 8px;text-align:center;white-space:nowrap}th{background:var(--bg)}
+.gt{display:flex;min-width:100%}.gb{color:#fff;text-align:center;padding:6px 2px;min-width:44px;border-right:2px solid var(--card);box-sizing:border-box}.gb b,.gb small{display:block;color:inherit}
+.idle{background:repeating-linear-gradient(45deg,var(--bd) 0 6px,transparent 6px 12px);color:var(--fg)}
+.hit,.flt{padding:2px 6px;border-radius:4px;font-weight:700}.hit{background:var(--okb);color:var(--ok)}.flt{background:var(--badb);color:var(--bad)}
+li[aria-current]{font-weight:700}
+svg{width:100%;min-width:560px;height:auto}.pl{stroke:var(--ac);stroke-width:2}.wl{stroke:var(--bad);stroke-width:2;stroke-dasharray:6 4}.pc{fill:var(--fg)}.sl{fill:var(--fg);font-size:11px}
+@keyframes grow{from{transform:scaleX(0)}}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+@keyframes ring{0%{box-shadow:0 0 0 0 var(--ac)}100%{box-shadow:0 0 0 14px transparent}}
+@keyframes slide{from{left:var(--from)}}
+@keyframes beat{50%{transform:scale(1.08)}}
+.gb.new{transform-origin:left;animation:grow .7s ease-out}.pop{animation:pop .5s ease-out}.ring{animation:ring 1s ease-out}
+.say{font-size:17px;background:var(--card);border:2px solid var(--ac);border-radius:12px;padding:10px 14px;margin:8px 0;animation:pop .4s ease-out}
+.hint{background:var(--card);border-left:4px solid var(--ac);padding:6px 10px;margin:8px 0;border-radius:4px}
+.scene{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}.box{flex:1;min-width:120px;border:2px dashed var(--bd);border-radius:12px;padding:8px}.box h4{margin:0 0 6px;font-size:13px;color:var(--mut)}
+.cpu{border:2px solid var(--ac);text-align:center}.cpu .chip{animation:beat 1.1s infinite;font-size:20px;padding:6px 18px}
+.chip{display:inline-block;color:#fff;border-radius:999px;padding:2px 12px;margin:2px;font-weight:700}.chip small{color:#fff;opacity:.85}
+.fr{display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;margin:3px;border:3px solid var(--bd);border-radius:10px;font-size:24px;font-weight:700}.fr.ld{border-color:var(--bad);background:var(--badb)}.fr.ht{border-color:var(--ok);background:var(--okb)}
+.track{position:relative;height:64px;margin:14px 18px 34px;border-bottom:4px solid var(--bd)}.dot{position:absolute;bottom:-9px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:var(--mut)}.dot.done{background:var(--ok)}.dot span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11px}
+.hd{position:absolute;bottom:8px;width:44px;margin-left:-22px;text-align:center;line-height:1.1;left:var(--to);animation:slide .9s ease-in-out}
+abbr{text-decoration:underline dotted;cursor:help}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<nav aria-label="Modules"><b>OS Algorithm Lab</b><button data-k="home" aria-current="page">Home</button><button data-k="cpu">CPU scheduling</button><button data-k="pg">Page replacement</button><button data-k="dk">Disk scheduling</button><button data-k="bk">Banker’s</button><button data-k="learn">Learn</button></nav>
+<main id="app"></main>
+<footer>Simulation only: every result is computed in your browser from textbook definitions of the algorithms. Nothing is sent anywhere and no real operating-system state is touched.</footer>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';'),fx=(n,d=2)=>Number.isInteger(n)?''+n:n.toFixed(d),isI=v=>/^-?\d+$/.test(v??''),toks=s=>s.trim()?s.trim().split(/\s*,\s*|\s+/):[],
+tbl=(h,r)=>`<div class=sc><table><thead><tr>${h.map(x=>`<th scope=col>${x}</th>`).join('')}</tr></thead><tbody>${r.map(y=>`<tr>${y.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`,
+lg=(s,i)=>`<h3>Decision log</h3><ol>${s.slice(0,i+1).map((x,j)=>`<li${j===i?' aria-current=step':''}>${esc(x.msg)}</li>`).join('')}</ol>`,
+rn=j=>String.fromCharCode(65+j),vec=a=>'('+a.join(', ')+')',DN={CSCAN:'C-SCAN',CLOOK:'C-LOOK'},dn=a=>DN[a]||a;
+const mods={},R={};let T=null,TK=null;
+const say=t=>`<div class=say>${t}</div>`,ab=(t,d)=>`<abbr title="${d}">${t}</abbr>`,col=k=>`hsl(${k*67%360} 55% 34%)`,
+HINT={cpuFCFS:'First Come, First Served: like a queue at a ticket counter. Whoever arrived first is served first and nobody can cut in.',cpuSJF:'Shortest Job First: the process that needs the least CPU time goes next. A running job is never interrupted.',cpuSRTF:'Shortest Remaining Time First: like SJF, but if a new process needs less time than what the running one has left, it takes over.',cpuRR:'Round Robin: everyone gets a small turn (the quantum). If you are not done, you go to the back of the line.',cpuPrioNP:'Priority (non-preemptive): the most important process (smallest number) goes next, but a running process is never interrupted.',cpuPrioP:'Priority (preemptive): a newly arrived process with a smaller priority number interrupts the running one.',pgFIFO:'FIFO: when memory is full, remove the page that has been there the longest, like the first person in line leaving first.',pgLRU:'LRU: remove the page you have not used for the longest time, assuming recently used pages will be needed again soon.',pgOPT:'Optimal: remove the page that will not be needed for the longest time in the future. It needs a crystal ball, so it is only a yardstick.',dkFCFS:'FCFS: visit requests in the order they arrived, even if that means a lot of zig-zagging.',dkSSTF:'SSTF: always go to the closest waiting request next. Short trips, but far-away requests may wait a long time.',dkSCAN:'SCAN (the elevator): sweep one way to the very end serving everything on the way, then reverse.',dkCSCAN:'C-SCAN: sweep one way to the end, jump back to the start without serving anything, then sweep the same way again.',dkLOOK:'LOOK: like SCAN, but turn around at the last request instead of going all the way to the end.',dkCLOOK:'C-LOOK: like C-SCAN, but jump from the last request straight to the first request on the other side.'},
+hint=k=>{const s=$('#'+k+'-a'),h=$('#'+k+'-hint');if(s&&h)h.textContent=HINT[k+s.value]||''},
+RULE={FCFS:'the one who arrived first goes first',SJF:'the shortest job goes first',SRTF:'the job with the least time left goes first',RR:'everyone gets a short turn',PrioNP:'the most important process goes first',PrioP:'the most important process goes first'};
+function cpuStory(r,i){const g=r.segs[i],ps=r.ps,K=ps.map((p,k)=>k),run=g.i,d=g.e-g.s,use=k=>r.segs.slice(0,i).filter(x=>x.i===k).reduce((s,x)=>s+x.e-x.s,0),lf=k=>ps[k].bt-use(k),
+ chip=(k,x)=>`<span class=chip style="background:${col(k)}">${esc(ps[k].id)}${x?` <small>${x}</small>`:''}</span>`,bx=(t,l)=>`<div class=box><h4>${t}</h4>${l.join('')||'<small>nobody</small>'}</div>`,left=run>=0?lf(run)-d:0;
+ const s=run<0?`😴 Nobody is ready, so the CPU rests from time ${g.s} to ${g.e}.`:`🧑‍🍳 Imagine the CPU as one cashier. From time ${g.s} to ${g.e} it serves <b>${esc(ps[run].id)}</b> for ${d} time unit(s), because <i>${RULE[r.al]}</i>.`+(left>0?(r.al==='RR'?` The turn is over, so ${esc(ps[run].id)} goes to the back of the line with ${left} unit(s) left.`:` It still needs ${left} more unit(s).`):` ✅ ${esc(ps[run].id)} is finished!`);
+ return say(s)+`<div class=scene>${bx('⏳ Not arrived yet',K.filter(k=>ps[k].at>g.s).map(k=>chip(k)))}${bx('🪑 Waiting in line',K.filter(k=>ps[k].at<=g.s&&lf(k)>0&&k!==run).map(k=>chip(k,lf(k)+' left')))}<div class="box cpu"><h4>⚙️ CPU (this step)</h4>${run<0?'😴 idle':chip(run,lf(run)+' left')}</div>${bx('✅ Finished',K.filter(k=>lf(k)<=0).map(k=>chip(k)))}</div>`}
+function pgStory(r,i){const x=r.steps[i],pv=i?r.steps[i-1].fr:[],nm=r.al==='OPT'?'Optimal':r.al,
+ fr=[...Array(r.f).keys()].map(k=>{const v=x.fr[k],c=!x.hit&&v!==pv[k]?' ld pop':x.hit&&v===x.p?' ht ring':'';return`<div class="fr${c}">${v??'·'}</div>`}).join(''),
+ s=x.hit?`✅ Page <b>${x.p}</b> is already in memory, so this is a <b>HIT</b>. Nothing moves, and it is fast!`:`❌ Page <b>${x.p}</b> is not in memory: a <b>PAGE FAULT</b> (slow, it must be loaded from disk). `+(x.ev===null?'There was an empty frame, so it is simply loaded.':`Memory is full, so ${nm} kicks out page <b>${x.ev}</b> because ${x.why}. Page ${x.p} takes its seat.`);
+ return say(s)+`<div class=scene><div class=box><h4>📥 Page requested</h4><div class="fr pop">${x.p}</div></div><div class=box><h4>🧠 Memory frames (seats)</h4>${fr}</div><div class=box><h4>🗑 Kicked out</h4>${x.ev===null?'<small>nobody</small>':`<div class="fr pop" style="text-decoration:line-through">${x.ev}</div>`}</div></div>`}
+function diskStory(r,i){const P=r.path,c=P[i+1]||P[0],p0=P[i]||P[0],pct=p=>(p-r.min)/(r.max-r.min)*100+'%',dn2=new Set(P.slice(0,i+2).filter(p=>p.kind==='service').map(p=>p.pos)),
+ t=i<0?`💿 The disk head starts at cylinder <b>${P[0].pos}</b>. Think of it as an elevator; the dots are floors where someone is waiting. Press Next or Play.`:c.kind==='service'?`🎯 The head moves from ${p0.pos} to <b>${c.pos}</b> (${c.d} steps of travel) and serves the request there. Total travel so far: <b>${c.cum}</b>.`:c.kind==='boundary'?`🧱 The head keeps going to the very end of the disk (cylinder <b>${c.pos}</b>) before turning around. That is ${c.d} steps of travel.`:`↩️ The head jumps straight to cylinder <b>${c.pos}</b> (${c.d} steps) without serving anything on the way. Circular algorithms do this.`;
+ return say(t)+`<div class=track>${[...new Set(r.order)].map(p=>`<div class="dot${dn2.has(p)?' done':''}" style="left:${pct(p)}"><span>${p}</span></div>`).join('')}<div class=hd style="--from:${pct(p0.pos)};--to:${pct(c.pos)}">💿<br><b>▼</b></div></div><p class=mut style="display:flex;justify-content:space-between;margin:-24px 18px 8px"><span>${r.min}</span><span>${r.max}</span></p>`}
+function bkStory(r,i,s){if(i<0)return say('🏦 A banker has limited money (the <b>Available</b> row). Each customer (process) already holds some (Allocation) and may ask for up to a limit (Maximum). <b>Need = Maximum − Allocation</b> is what they may still ask for. Press Next to see whether everyone can finish.');
+ const b=i?r.steps[i-1].W:r.V;
+ return say(s.end?(s.safe?'🎉 Everyone was able to finish, one after another. So the state is <b>SAFE</b>: the banker can always keep his promises.':'⚠️ Nobody left can be satisfied with the money available. The state is <b>UNSAFE</b>: no order guarantees everyone finishes. This is a warning, not a deadlock that has already happened.'):`🏦 The banker checks <b>P${s.i}</b>: it may still ask for ${vec(r.N[s.i])} and ${vec(b)} is free, which is enough. So P${s.i} can finish and hands back everything it holds ${vec(r.A[s.i])}. Now ${vec(s.W)} is free for the next customer.`)}
+
+/* ---------- player (separate from algorithm output) ---------- */
+function sync(k){const r=R[k],s=$('#'+k),n=r?r.res.steps.length:0,p=s.querySelector('[data-a=play]');
+ s.querySelector('[data-a=prev]').disabled=!r||r.i<0;s.querySelector('[data-a=next]').disabled=!r||r.i>=n-1;s.querySelector('[data-a=reset]').disabled=!r;
+ p.disabled=!r;p.textContent=T&&TK===k?'⏸ Pause':'▶ Play'}
+function halt(){clearInterval(T);T=null;if(TK)sync(TK)}
+function draw(k){const r=R[k],o=$('#'+k+' .out'),st=$('#'+k+' .st');
+ if(!r){o.innerHTML='<p>Nothing to show yet. Check the input, then press <b>Run</b>.</p>';st.textContent='';sync(k);return}
+ o.innerHTML=mods[k].view(r.res,r.i);
+ st.textContent=r.i<0?'Initial state. Press Next or Play.':`Step ${r.i+1} of ${r.res.steps.length}: ${r.res.steps[r.i].msg}`;sync(k)}
+function play(k){const r=R[k];if(!r)return;if(T&&TK===k){halt();return}halt();
+ if(r.i>=r.res.steps.length-1)r.i=-1;TK=k;draw(k);
+ T=setInterval(()=>{if(r.i>=r.res.steps.length-1){halt();return}r.i++;draw(k)},+$('#'+k+' [data-a=spd]').value);sync(k)}
+const showErr=(k,E)=>{$('#'+k+' .errs').innerHTML=E?`<div class=err role=alert><b>Please fix ${E.length} input problem(s):</b><ul>${E.slice(0,8).map(m=>`<li>${esc(m)}</li>`).join('')}</ul>${E.length>8?`<p>…and ${E.length-8} more.</p>`:''}</div>`:''};
+function exec(k,f){halt();let x;try{x=mods[k][f]()}catch(e){console.error(e);x={errs:['Unexpected problem while simulating. Please check the input and try again.']}}
+ showErr(k,x.errs);return x.errs?null:x}
+function go(k){halt();document.querySelectorAll('#app>section').forEach(s=>s.hidden=s.id!==k);
+ document.querySelectorAll('nav button').forEach(b=>b.dataset.k===k?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'))}
+document.addEventListener('click',e=>{const b=e.target.closest('button[data-a],button[data-k]');if(!b)return;
+ if(b.dataset.k){go(b.dataset.k);return}
+ const k=b.closest('section').id,a=b.dataset.a,r=R[k];
+ if(a==='run'){const x=exec(k,'run');R[k]=x?{res:x,i:x.steps.length-1}:null;draw(k)}
+ else if(a==='cmp'){const x=exec(k,'cmp');if(x)$('#'+k+' .cmp').innerHTML=x.html}
+ else if(a==='play')play(k);
+ else if((a==='next'||a==='prev')&&r){halt();r.i=Math.max(-1,Math.min(r.res.steps.length-1,r.i+(a==='next'?1:-1)));draw(k)}
+ else if(a==='reset'&&r){halt();r.i=-1;draw(k)}
+ else if(a==='ex')mods[k].ex()});
+document.addEventListener('change',e=>{const t=e.target,k=t.closest('section')?.id,a=t.dataset.a;
+ if(a==='alg'){mods[k].alg?.();hint(k)}if(a==='spd'&&T&&TK===k){halt();play(k)}});
+
+/* ---------- Module A: CPU scheduling ---------- */
+const cmpK=(a,b)=>{for(let k=0;k<a.length;k++)if(a[k]!==b[k])return a[k]-b[k];return 0};
+function fin(ps,segs,ct,fs){const rows=ps.map((p,i)=>{const tat=ct[i]-p.at;return{...p,ct:ct[i],tat,wt:tat-p.bt,rt:fs[i]-p.at}}),end=Math.max(...ct),av=k=>rows.reduce((s,r)=>s+r[k],0)/rows.length;
+ return{segs,rows,end,m:{wt:av('wt'),tat:av('tat'),rt:av('rt'),util:ps.reduce((s,p)=>s+p.bt,0)/end*100,thr:rows.length/end},steps:segs.map(g=>({msg:`t=${g.s}–${g.e}: ${g.why}`}))}}
+function simCpu(ps,al){const n=ps.length,rem=ps.map(p=>p.bt),fs=Array(n).fill(null),ct=Array(n).fill(null),segs=[],pre=al==='SRTF'||al==='PrioP',
+ key=i=>{const p=ps[i];return al==='FCFS'?[p.at,i]:al==='SJF'?[p.bt,p.at,i]:al==='SRTF'?[rem[i],p.at,i]:[p.pr,p.at,i]},
+ rule={FCFS:'earliest arrival',SJF:'shortest burst',SRTF:'shortest remaining time',PrioNP:'highest priority (lowest number)',PrioP:'highest priority (lowest number)'}[al];
+ let t=0,done=0,run=-1,cur=null;
+ while(done<n){
+  const rd=ps.map((p,i)=>i).filter(i=>ps[i].at<=t&&rem[i]>0);let c=-1;
+  if(rd.length){if(run>=0&&!pre)c=run;else{c=rd.reduce((a,b)=>cmpK(key(a),key(b))<=0?a:b);if(run>=0&&pre&&key(run)[0]===key(c)[0])c=run}}
+  if(!cur||cur.i!==c){const p0=cur?cur.i:-1;
+   cur={i:c,s:t,e:t,why:c<0?'CPU idle: no process is ready':`${ps[c].id} chosen from ready {${rd.map(i=>ps[i].id).join(', ')}} by ${rule}`+(p0>=0&&rem[p0]>0&&p0!==c?`; preempted ${ps[p0].id} (remaining ${rem[p0]})`:'')};segs.push(cur)}
+  cur.e=t+1;
+  if(c>=0){if(fs[c]===null)fs[c]=t;rem[c]--;if(!rem[c]){ct[c]=t+1;done++;run=-1}else run=c}else run=-1;
+  t++}
+ return fin(ps,segs,ct,fs)}
+function simRr(ps,q){const n=ps.length,rem=ps.map(p=>p.bt),fs=Array(n).fill(null),ct=Array(n).fill(null),segs=[],Q=[],qd=Array(n).fill(false);let t=0,done=0;
+ const arr=()=>ps.map((p,i)=>i).filter(i=>!qd[i]&&ps[i].at<=t).sort((a,b)=>ps[a].at-ps[b].at||a-b).forEach(i=>{qd[i]=true;Q.push(i)});
+ arr();
+ while(done<n){
+  if(!Q.length){const nx=Math.min(...ps.filter((p,i)=>!qd[i]).map(p=>p.at));segs.push({i:-1,s:t,e:nx,why:'CPU idle: ready queue is empty'});t=nx;arr();continue}
+  const i=Q.shift(),d=Math.min(q,rem[i]),b=Q.map(j=>ps[j].id).join(', ')||'empty',s=t;
+  if(fs[i]===null)fs[i]=t;t+=d;rem[i]-=d;arr();
+  let why=`${ps[i].id} runs ${d} unit(s) = min(quantum ${q}, remaining); queue behind it: ${b}`;
+  if(rem[i]>0){Q.push(i);why+=`; quantum expired, re-queued at tail (remaining ${rem[i]})`}else{ct[i]=t;done++;why+=`; ${ps[i].id} completes`}
+  segs.push({i,s,e:t,why})}
+ return fin(ps,segs,ct,fs)}
+function cpuIn(al){const E=[],ps=[],ids=new Set(),L=$('#cpu-p').value.split('\n').map(s=>s.trim()).filter(Boolean),np=/^Prio/.test(al);
+ if(!L.length)E.push('Processes: enter at least one process.');if(L.length>100)E.push('Processes: the limit is 100.');
+ L.slice(0,100).forEach((l,n)=>{const f=l.split(/[\s,]+/),[id,a,b,pr]=f,w=`Line ${n+1}`;
+  if(f.length<3||f.length>4){E.push(`${w}: use “id, arrival, burst[, priority]”.`);return}
+  if(ids.has(id))E.push(`${w}: duplicate process ID “${id}”.`);ids.add(id);
+  if(!isI(a)||a<0||a>1000)E.push(`${w}: arrival time must be an integer from 0 to 1000.`);
+  if(!isI(b)||b<1||b>1000)E.push(`${w}: burst time must be an integer from 1 to 1000.`);
+  if(pr!==undefined&&!isI(pr))E.push(`${w}: priority must be an integer.`);
+  if(np&&pr===undefined)E.push(`${w}: priority is required for priority scheduling (lower number = higher priority).`);
+  ps.push({id,at:+a,bt:+b,pr:pr===undefined?null:+pr})});
+ let q=null;if(al==='RR'){const v=$('#cpu-q').value.trim();if(!/^\d+$/.test(v)||v<1||v>1000)E.push('Time quantum: enter an integer from 1 to 1000.');else q=+v}
+ return E.length?{errs:E}:{ps,q}}
+mods.cpu={alg(){$('#cpu-qw').hidden=$('#cpu-a').value!=='RR'},
+ ex(){$('#cpu-p').value='P1, 0, 5, 2\nP2, 1, 3, 1\nP3, 2, 1, 3';$('#cpu-q').value=2},
+ run(){const al=$('#cpu-a').value,v=cpuIn(al);if(v.errs)return v;const r=al==='RR'?simRr(v.ps,v.q):simCpu(v.ps,al);return{...r,ps:v.ps,al,q:v.q}},
+ cmp(){const v=cpuIn('FCFS');if(v.errs)return v;const qv=$('#cpu-q').value.trim(),qok=/^\d+$/.test(qv)&&qv>=1&&qv<=1000,pok=v.ps.every(p=>p.pr!==null),
+  A=[['FCFS','FCFS'],['SJF','SJF (non-preemptive)'],['SRTF','SRTF'],qok&&['RR',`Round Robin (q=${qv})`],pok&&['PrioNP','Priority (non-preemptive)'],pok&&['PrioP','Priority (preemptive)']].filter(Boolean),
+  rows=A.map(([k,nm])=>{const m=(k==='RR'?simRr(v.ps,+qv):simCpu(v.ps,k)).m;return[nm,fx(m.wt),fx(m.tat),fx(m.rt),fx(m.util)+'%',fx(m.thr,3)]});
+  return{html:`<div class=card><h3>Comparison on the identical process set</h3>${tbl(['Algorithm','Avg WT','Avg TAT','Avg RT','CPU utilization','Throughput (proc/unit)'],rows)}<p>${qok?'':'Round Robin skipped: invalid quantum. '}${pok?'':'Priority algorithms skipped: every process needs a priority. '}No algorithm is best for every workload; results depend on arrivals, burst lengths and the tie-breaking rules.</p></div>`}},
+ view(r,i){if(i<0)return'<p>Initial state: t = 0, nothing has run yet.</p>';
+  const g=r.segs.slice(0,i+1),t=g[i].e,last=i===r.segs.length-1,pc=/^Prio/.test(r.al),nm=x=>x.i<0?'idle':esc(r.ps[x.i].id),
+  rows=r.rows.filter(x=>x.ct<=t).map(x=>[esc(x.id),x.at,x.bt,...(pc?[x.pr]:[]),x.ct,x.tat,x.wt,x.rt]);
+  return cpuStory(r,i)+`<h3>Gantt chart (simulated time units${r.al==='RR'?`, quantum ${r.q}`:''})</h3><div class=sc><div class=gt>${g.map((x,j)=>`<div class="gb${x.i<0?' idle':''}${j===i?' new':''}" style="flex:${x.e-x.s} 1 0;${x.i<0?'':`background:hsl(${x.i*67%360} 55% 34%)`}"><b>${nm(x)}</b><small>${x.s}–${x.e}</small></div>`).join('')}</div></div>
+<h3>Process results (shown once a process has completed)</h3>${tbl(['Process',ab('AT','Arrival time: when it shows up'),ab('BT','Burst time: CPU time it needs'),...(pc?[ab('Priority','Smaller number = more important')]:[]),ab('CT','Completion time: when it finished'),ab('TAT','Turnaround = CT − AT'),ab('WT','Waiting = TAT − BT: time spent in line'),ab('RT','Response = first CPU start − AT')],rows)}`+
+  (last?`<h3>Averages and utilization</h3>${tbl(['Avg WT','Avg TAT','Avg RT','CPU utilization','Throughput'],[[fx(r.m.wt),fx(r.m.tat),fx(r.m.rt),fx(r.m.util)+'%',fx(r.m.thr,3)+' proc/unit']])}<p class=mut>Interval: t = 0 to ${r.end} (last completion). TAT = CT − AT, WT = TAT − BT, RT = first CPU start − AT.</p>`:'')+lg(r.steps,i)}};
+
+/* ---------- Module B: page replacement ---------- */
+function pgSim(refs,f,al){const fr=[],q=[],last={},steps=[];let flt=0;
+ refs.forEach((p,i)=>{let hit=fr.includes(p),ev=null,why='already resident, no change';
+  if(!hit){flt++;if(fr.length<f){fr.push(p);q.push(p);why='a free frame was available'}else{let v;
+   if(al==='FIFO'){v=q[0];why=`page ${v} has been resident longest`}
+   else if(al==='LRU'){v=fr.reduce((a,b)=>last[a]<=last[b]?a:b);why=`page ${v} was least recently used (last at reference ${last[v]+1})`}
+   else{let b=-1;fr.forEach(x=>{let n=refs.indexOf(x,i+1);if(n<0)n=Infinity;if(n>b){b=n;v=x}});why=b===Infinity?`page ${v} is never used again`:`page ${v} is used farthest in the future (reference ${b+1})`}
+   fr[fr.indexOf(v)]=p;q.splice(q.indexOf(v),1);q.push(p);ev=v}}
+  last[p]=i;
+  steps.push({p,hit,ev,why,fr:[...fr],cf:flt,msg:`Reference ${i+1}: page ${p} is a ${hit?'HIT':'FAULT'}${ev!==null?`, evict page ${ev} (${why})`:` (${why})`}`})});
+ return{steps,f,al,refs,hits:refs.length-flt,flt}}
+function pgIn(){const E=[],t=toks($('#pg-r').value),f=$('#pg-f').value.trim();
+ if(!t.length)E.push('Reference string: enter at least one page number.');else if(t.length>200)E.push('Reference string: the limit is 200 references.');
+ else t.forEach((v,n)=>{if(!/^\d{1,6}$/.test(v))E.push(`Reference ${n+1}: “${v}” must be a non-negative integer of up to 6 digits (check the separators).`)});
+ if(!/^\d+$/.test(f)||f<1||f>20)E.push('Frames: enter an integer from 1 to 20.');
+ return E.length?{errs:E}:{refs:t.map(Number),f:+f}}
+mods.pg={ex(){$('#pg-r').value='7, 0, 1, 2, 0, 3, 0, 4';$('#pg-f').value=3},
+ run(){const v=pgIn();return v.errs?v:pgSim(v.refs,v.f,$('#pg-a').value)},
+ cmp(){const v=pgIn();if(v.errs)return v;const n=v.refs.length;
+  return{html:`<div class=card><h3>Comparison on the same reference string and ${v.f} frame(s)</h3>${tbl(['Algorithm','Faults','Hits','Fault ratio','Hit ratio'],['FIFO','LRU','OPT'].map(a=>{const r=pgSim(v.refs,v.f,a);return[a==='OPT'?'Optimal':a,r.flt,r.hits,fx(r.flt/n*100)+'%',fx(r.hits/n*100)+'%']}))}<p>Ratios = count ÷ ${n} references × 100%. Optimal needs future knowledge, so it is a benchmark rather than a practical policy.</p></div>`}},
+ view(r,i){if(i<0)return'<p>Initial state: all frames are empty.</p>';const s=r.steps.slice(0,i+1),h=s.filter(x=>x.hit).length;
+  return pgStory(r,i)+`<h3>Frame trace: ${r.al==='OPT'?'Optimal':r.al}, ${r.f} frame(s)</h3>`+tbl(['Reference',...s.map(x=>x.p)],[...Array(r.f).keys()].map(k=>[`Frame ${k+1}`,...s.map(x=>x.fr[k]??'–')]).concat([['Result',...s.map(x=>`<span class=${x.hit?'hit':'flt'}>${x.hit?'✓ HIT':'✗ FAULT'}</span>`)],['Evicted',...s.map(x=>x.ev??'–')],['Cumulative faults',...s.map(x=>x.cf)]]))+
+  `<p>After ${s.length} of ${r.refs.length} references: <b>${h} hits</b>, <b>${s.length-h} faults</b>, hit ratio ${fx(h/s.length*100)}%, fault ratio ${fx((s.length-h)/s.length*100)}%.</p>`+lg(r.steps,i)}};
+
+/* ---------- Module C: disk scheduling ---------- */
+function diskRun(al,v){const{min,max,head,dir,rq}=v,P=[{pos:head,kind:'start',why:'initial head position',d:0,cum:0}];let pos=head,cum=0;
+ const mv=(to,kind,why)=>{const d=Math.abs(to-pos);cum+=d;P.push({pos:to,kind,why,d,cum});pos=to},Q=rq.map((c,i)=>({c,i}));
+ if(al==='FCFS')Q.forEach(x=>mv(x.c,'service',`request ${x.i+1} in arrival order`));
+ else if(al==='SSTF'){let pd=[...Q];while(pd.length){const b=pd.reduce((a,x)=>{const da=Math.abs(a.c-pos),dx=Math.abs(x.c-pos);return dx<da||(dx===da&&(x.c<a.c||(x.c===a.c&&x.i<a.i)))?x:a});mv(b.c,'service',`nearest pending request (distance ${Math.abs(b.c-pos)})`);pd=pd.filter(x=>x!==b)}}
+ else{const rt=dir==='Right',asc=(a,b)=>a.c-b.c||a.i-b.i,dsc=(a,b)=>b.c-a.c||a.i-b.i,
+  f1=Q.filter(x=>rt?x.c>=head:x.c<=head).sort(rt?asc:dsc),f2=Q.filter(x=>rt?x.c<head:x.c>head).sort(rt?dsc:asc),e1=rt?max:min,e2=rt?min:max,sv=(L,w)=>L.forEach(x=>mv(x.c,'service',w));
+  sv(f1,'on the sweep path');
+  if((al==='SCAN'||al==='CSCAN')&&pos!==e1)mv(e1,'boundary','continue to the physical disk boundary');
+  if(al==='SCAN'||al==='LOOK')sv(f2,al==='SCAN'?'on the return sweep':'reversed at the last pending request');
+  else{const s2=[...f2].reverse();if(s2.length){mv(al==='CSCAN'?e2:s2[0].c,'wrap',al==='CSCAN'?'wrap to the opposite boundary (distance counted)':'jump to the furthest pending request at the opposite end (distance counted)');sv(s2,'after the wrap, same direction')}}}
+ return{path:P,min,max,al,n:rq.length,total:cum,order:P.filter(p=>p.kind==='service').map(p=>p.pos),steps:P.slice(1).map(p=>({msg:`${{service:'Serve',boundary:'Move to boundary',wrap:'Wrap to'}[p.kind]} cylinder ${p.pos} (moved ${p.d}, total ${p.cum}): ${p.why}`}))}}
+function diskIn(needDir){const E=[],g=id=>$('#'+id).value.trim(),mn=g('dk-min'),mx=g('dk-max'),hd=g('dk-h'),dir=g('dk-d'),rg=isI(mn)&&isI(mx);
+ if(!isI(mn))E.push('Disk range: minimum cylinder must be an integer.');if(!isI(mx))E.push('Disk range: maximum cylinder must be an integer.');
+ if(rg&&+mn>=+mx)E.push('Disk range: minimum must be less than maximum.');
+ if(!isI(hd))E.push('Head position must be an integer.');else if(rg&&(+hd<+mn||+hd>+mx))E.push(`Head position ${hd} is outside the disk range ${mn}–${mx}.`);
+ const t=toks(g('dk-r'));if(!t.length)E.push('Request queue: enter at least one cylinder.');else if(t.length>100)E.push('Request queue: the limit is 100 requests.');
+ else t.forEach((v,n)=>{if(!isI(v))E.push(`Request ${n+1}: “${v}” is not an integer (check the separators).`);else if(rg&&(+v<+mn||+v>+mx))E.push(`Request ${n+1}: ${v} is outside the disk range ${mn}–${mx}.`)});
+ if(needDir&&!dir)E.push('Direction is required for SCAN, C-SCAN, LOOK and C-LOOK.');
+ return E.length?{errs:E}:{min:+mn,max:+mx,head:+hd,dir,rq:t.map(Number)}}
+mods.dk={alg(){$('#dk-d').disabled=/^(FCFS|SSTF)$/.test($('#dk-a').value)},
+ ex(){[['dk-min',0],['dk-max',199],['dk-h',50],['dk-d','Right']].forEach(([a,b])=>$('#'+a).value=b);$('#dk-r').value='82, 170, 43, 140, 24, 16, 190'},
+ run(){const al=$('#dk-a').value,v=diskIn(/^(SCAN|CSCAN|LOOK|CLOOK)$/.test(al));return v.errs?v:diskRun(al,v)},
+ cmp(){const v=diskIn(true);if(v.errs)return v;
+  return{html:`<div class=card><h3>Comparison: same queue, head ${v.head}, range ${v.min}–${v.max}, direction ${v.dir}</h3>${tbl(['Algorithm','Total head movement','Average per request','Service order'],['FCFS','SSTF','SCAN','CSCAN','LOOK','CLOOK'].map(a=>{const r=diskRun(a,v);return[dn(a),r.total,fx(r.total/r.n),r.order.join(', ')]}))}<p>Wrap jumps and boundary runs count as head movement. Which policy wins depends on the request pattern.</p></div>`}},
+ view(r,i){const pts=r.path.slice(0,i+2),W=680,H=48+22*r.path.length,X=p=>30+(p-r.min)/(r.max-r.min)*600,Y=k=>40+k*22;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Head path: cylinder position across, service order downward"><text x="30" y="14" class="sl">Cylinder ${r.min} to ${r.max} (horizontal); step order runs downward; dashed red = wrap movement</text>`;
+  for(let k=1;k<pts.length;k++)s+=`<line x1="${X(pts[k-1].pos)}" y1="${Y(k-1)}" x2="${X(pts[k].pos)}" y2="${Y(k)}" class="${pts[k].kind==='wrap'?'wl':'pl'}"/>`;
+  pts.forEach((p,k)=>{s+=`<circle cx="${X(p.pos)}" cy="${Y(k)}" r="4" class="pc"/><text x="${X(p.pos)+7}" y="${Y(k)+4}" class="sl">${p.pos}</text>`});
+  const last=i===r.steps.length-1;
+  return diskStory(r,i)+`<h3>Head movement path: ${dn(r.al)}</h3><div class=sc>${s}</svg></div><h3>Movement table</h3>${tbl(['#','From','To','Distance','Type','Why','Total so far'],r.path.slice(1,i+2).map((p,k)=>[k+1,r.path[k].pos,p.pos,p.d,p.kind,esc(p.why),p.cum]))}`+
+  (last?`<p><b>Total head movement: ${r.total}</b> cylinders; average per request ${fx(r.total/r.n)}; final head position ${r.path[r.path.length-1].pos}.<br>Service order: ${r.order.join(', ')}</p>`:'')+lg(r.steps,i)}};
+
+/* ---------- Module D: Banker's safety algorithm ---------- */
+function bank(A,X,V){const n=A.length,m=V.length,N=A.map((r,i)=>r.map((v,j)=>X[i][j]-v)),W=[...V],F=Array(n).fill(false),seq=[],steps=[];
+ for(;;){const i=F.findIndex((f,k)=>!f&&N[k].every((v,j)=>v<=W[j]));if(i<0)break;
+  const b=[...W];A[i].forEach((v,j)=>W[j]+=v);F[i]=true;seq.push(i);
+  steps.push({i,F:[...F],W:[...W],msg:`P${i}: Need ${vec(N[i])} ≤ Work ${vec(b)}, so it can finish and release Allocation ${vec(A[i])}; Work = ${vec(W)}`})}
+ const safe=seq.length===n,left=F.map((f,k)=>f?-1:k).filter(k=>k>=0);
+ steps.push({end:1,safe,F:[...F],W:[...W],msg:safe?`SAFE STATE ✓ Safe sequence: <${seq.map(i=>'P'+i).join(', ')}>`:`UNSAFE STATE ✗ No safe sequence exists. Unfinished: ${left.map(k=>`P${k} (${N[k].map((v,j)=>v>W[j]?`${rn(j)} short by ${v-W[j]}`:'').filter(Boolean).join(', ')})`).join('; ')}. This is not a deadlock that has occurred; no process order guarantees completion.`});
+ return{A,X,V,N,steps,n,m}}
+function bkIn(){const E=[],mat=(id,nm)=>{const M=[];$('#'+id).value.split('\n').map(s=>s.trim()).filter(Boolean).forEach((l,r)=>{const c=toks(l);c.forEach((v,j)=>{if(!/^\d+$/.test(v))E.push(`${nm}, row ${r+1}, column ${j+1}: “${v}” must be a non-negative integer.`)});M.push(c.map(Number))});return M},
+ A=mat('bk-a','Allocation'),X=mat('bk-x','Maximum'),V0=toks($('#bk-v').value),V=V0.map(Number),n=A.length,m=n?A[0].length:0;
+ V0.forEach((v,j)=>{if(!/^\d+$/.test(v))E.push(`Available, entry ${j+1}: “${v}” must be a non-negative integer.`)});
+ if(!n)E.push('Allocation: enter at least one process row.');if(n>20||m>10)E.push('Limits: at most 20 processes and 10 resource types.');
+ if(A.some(r=>r.length!==m))E.push('Allocation: every row needs the same number of columns (missing cells?).');
+ if(X.length!==n)E.push(`Maximum has ${X.length} row(s) but Allocation has ${n}.`);else if(X.some(r=>r.length!==m))E.push('Maximum: every row must have as many columns as Allocation.');
+ if(V.length!==m)E.push(`Available has ${V.length} entries but there are ${m} resource types.`);
+ if(!E.length)A.forEach((r,i)=>r.forEach((v,j)=>{if(X[i][j]<v)E.push(`P${i}, resource ${rn(j)}: Maximum ${X[i][j]} is less than Allocation ${v}.`)}));
+ return E.length?{errs:E}:{A,X,V}}
+mods.bk={ex(){$('#bk-a').value='0 1 0\n2 0 0\n3 0 2\n2 1 1\n0 0 2';$('#bk-x').value='7 5 3\n3 2 2\n9 0 2\n2 2 2\n4 3 3';$('#bk-v').value='3 3 2'},
+ run(){const v=bkIn();return v.errs?v:bank(v.A,v.X,v.V)},
+ view(r,i){const s=i<0?{F:Array(r.n).fill(false),W:r.V}:r.steps[i],head=['',...[...Array(r.m).keys()].map(rn)],
+  M=(t,Mx,mk)=>`<div><h3>${t}</h3>${tbl(head,Mx.map((row,k)=>[`P${k}${mk&&s.F[k]?' ✓':''}${mk&&s.i===k?' ◀ now':''}`,...row]))}</div>`;
+  return bkStory(r,i,s)+`<div class=g2>${M('Allocation',r.A)}${M('Maximum',r.X)}${M('Need = Max − Alloc (✓ = finished)',r.N,1)}</div><h3>Work (available) now</h3><div class=pop>${tbl(head.slice(1),[s.W])}</div>`+(s.end?`<p class="${s.safe?'hit':'flt'}" role=status><b>${esc(s.msg)}</b></p>`:'')+lg(r.steps,i)}};
+
+/* ---------- page shell ---------- */
+const ctl=c=>`<div class=bar><button class=pri data-a=run>Run</button><button data-a=prev disabled>◀ Prev</button><button data-a=play disabled>▶ Play</button><button data-a=next disabled>Next ▶</button><button data-a=reset disabled>Reset</button><button data-a=ex>Load example</button>${c?'<button data-a=cmp>Compare all</button>':''}<label>Speed <select data-a=spd><option value=1200>Slow<option value=700 selected>Normal<option value=250>Fast</select></label></div>`,
+sec=(k,t,intro,form,c=1)=>`<section id=${k} hidden><h2>${t}</h2><p>${intro}</p><div class=card>${form}${ctl(c)}<div class=errs></div></div><div class=st role=status aria-live=polite></div><div class="out card"></div><div class=cmp></div></section>`,
+hm=`<section id=home><h1>Interactive OS Algorithm Lab</h1><p>Step through real implementations of core Operating Systems algorithms using your own input. Everything here is a <b>simulation</b>; it does not control your computer’s real scheduler, disk, memory or resources.</p><div class=g2>${[['cpu','CPU scheduling','FCFS, SJF, SRTF, Round Robin and Priority (both modes) with a Gantt chart and metrics.'],['pg','Page replacement','FIFO, LRU and Optimal with a frame-by-frame hit and fault trace.'],['dk','Disk scheduling','FCFS, SSTF, SCAN, C-SCAN, LOOK and C-LOOK with a head-path chart.'],['bk','Banker’s algorithm','Need matrix, safety iterations and safe sequence.']].map(c=>`<div class=card><h3>${c[1]}</h3><p>${c[2]}</p><button data-k=${c[0]}>Open ${c[1]}</button></div>`).join('')}</div><p>How to use: open a module, load the example or type your own data, press <b>Run</b>, then step with Prev and Next or press Play. <b>Compare all</b> runs every algorithm on identical input.</p></section>`,
+ln=`<section id=learn hidden><h2>Learn: rules, conventions and limits</h2>
+<details open><summary>CPU scheduling</summary><ul><li><b>FCFS</b>: earliest arrival runs to completion (convoy effect).</li><li><b>SJF</b>: shortest burst first, non-preemptive. <b>SRTF</b>: re-checked every time unit; only a strictly shorter remaining time preempts.</li><li><b>Round Robin</b>: FIFO queue, each turn is min(quantum, remaining). A process arriving exactly when a quantum ends joins the queue <i>before</i> the expired process.</li><li><b>Priority</b>: lower number = higher priority; only a strictly higher priority preempts; starvation is possible.</li><li>Ties: earlier arrival, then input order. Idle gaps appear as hatched “idle” blocks. TAT = CT − AT, WT = TAT − BT, RT = first CPU start − AT, utilization = busy time ÷ elapsed time (t = 0 to last completion), throughput = processes ÷ elapsed time.</li></ul></details>
+<details><summary>Page replacement</summary><ul><li><b>FIFO</b> evicts the page resident longest; hits do not reorder. <b>LRU</b> evicts the page unused for longest; hits refresh recency. <b>Optimal</b> evicts the page whose next use is farthest away (never used again first; ties go to the lowest frame), so it is a benchmark, not implementable online.</li><li>Ratios = hits or faults ÷ references × 100%. FIFO can show Belady’s anomaly (more frames, more faults).</li></ul></details>
+<details><summary>Disk scheduling</summary><ul><li><b>FCFS</b>: queue order. <b>SSTF</b>: nearest request (ties: lower cylinder, then input order); far requests can starve.</li><li><b>SCAN</b> sweeps to the physical boundary, then reverses. <b>C-SCAN</b> sweeps to the boundary, wraps to the opposite boundary and continues the same way. <b>LOOK</b> and <b>C-LOOK</b> turn or wrap at the last pending request instead.</li><li>Total head movement counts every cylinder travelled, including boundary runs and wrap jumps. A request at the head position costs 0.</li></ul></details>
+<details><summary>Banker’s algorithm</summary><ul><li>Need = Maximum − Allocation. Work = Available. Repeatedly pick the lowest-numbered unfinished process with Need ≤ Work, add its Allocation to Work and mark it finished.</li><li>All finished: safe state with a safe sequence. Otherwise unsafe: no order guarantees completion. That is not the same as a deadlock having occurred.</li></ul></details>
+<details><summary>Glossary, limits and scope</summary><p><b>Burst time</b>: CPU time needed. <b>Quantum</b>: Round Robin time slice. <b>Frame</b>: memory slot holding one page. <b>Page fault</b>: referenced page is not in a frame. <b>Seek distance</b>: cylinders the head travels. <b>Need</b>: resources a process may still request.</p><p>Limits: 100 processes (times up to 1000); 200 page references and 1–20 frames; 100 disk requests; Banker’s 20 processes × 10 resource types. Everything here simulates textbook algorithms and never touches your real system.</p></details></section>`;
+$('#app').innerHTML=hm+
+sec('cpu','CPU scheduling','Imagine ONE cashier (the CPU) and several customers (processes). The scheduling algorithm is the rule for who is served next. Pick an algorithm, press Run, then step through it. Times are simulated units.',`<div class=g2><div><label for=cpu-p>Processes (one per line: id, arrival, burst[, priority])</label><textarea id=cpu-p spellcheck=false></textarea><small>Lower priority number = higher priority. Limits: 100 processes; arrival 0–1000; burst 1–1000.</small></div><div><label for=cpu-a>Algorithm</label><select id=cpu-a data-a=alg><option value=FCFS>FCFS<option value=SJF>SJF (non-preemptive)<option value=SRTF>SRTF (preemptive SJF)<option value=RR>Round Robin<option value=PrioNP>Priority (non-preemptive)<option value=PrioP>Priority (preemptive)</select><p class=hint id=cpu-hint></p><div id=cpu-qw><label for=cpu-q>Time quantum (Round Robin)</label><input id=cpu-q inputmode=numeric></div></div></div>`)+
+sec('pg','Page replacement','Memory (RAM) has only a few seats (frames). When a program needs a page that has no seat, someone must leave, and the algorithm decides who. Watch each hit, fault and eviction.',`<div class=g2><div><label for=pg-r>Page reference string (spaces or commas)</label><textarea id=pg-r spellcheck=false></textarea><small>Limit: 200 references, page numbers 0–999999.</small></div><div><label for=pg-f>Number of frames (1–20)</label><input id=pg-f inputmode=numeric><label for=pg-a>Algorithm</label><select id=pg-a data-a=alg><option value=FIFO>FIFO<option value=LRU>LRU<option value=OPT>Optimal</select><p class=hint id=pg-hint></p></div></div>`)+
+sec('dk','Disk scheduling','The disk head is like an elevator and each request is a floor where someone waits. The algorithm chooses the order of floors; less travel is faster. Every cylinder travelled counts, including boundary runs and wrap jumps.',`<div class=g2><div><label for=dk-r>Request queue (cylinders, spaces or commas)</label><textarea id=dk-r spellcheck=false></textarea><small>Limit: 100 requests.</small></div><div><label for=dk-a>Algorithm</label><select id=dk-a data-a=alg><option value=FCFS>FCFS<option value=SSTF>SSTF<option value=SCAN>SCAN<option value=CSCAN>C-SCAN<option value=LOOK>LOOK<option value=CLOOK>C-LOOK</select><p class=hint id=dk-hint></p><label for=dk-d>Initial direction (needed for SCAN, C-SCAN, LOOK, C-LOOK)</label><select id=dk-d><option value="">Select…<option>Left<option>Right</select></div><div><label for=dk-min>Minimum cylinder</label><input id=dk-min inputmode=numeric><label for=dk-max>Maximum cylinder</label><input id=dk-max inputmode=numeric><label for=dk-h>Initial head position</label><input id=dk-h inputmode=numeric></div></div>`)+
+sec('bk','Banker’s algorithm (safety check)','A banker lends limited money (resources) to customers (processes) who have credit limits. Before lending, he checks that everyone could still finish. One row per process, one column per resource type (limit 20 × 10).',`<div class=g2><div><label for=bk-a>Allocation matrix</label><textarea id=bk-a spellcheck=false></textarea></div><div><label for=bk-x>Maximum matrix</label><textarea id=bk-x spellcheck=false></textarea></div><div><label for=bk-v>Available vector</label><input id=bk-v></div></div>`,0)+ln;
+mods.cpu.ex();mods.pg.ex();mods.dk.ex();mods.bk.ex();mods.cpu.alg();mods.dk.alg();['cpu','pg','dk'].forEach(hint);['cpu','pg','dk','bk'].forEach(draw);
+</script>
+</body>
+</html>
